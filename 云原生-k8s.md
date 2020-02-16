@@ -125,3 +125,53 @@ D. matchExpressions
 A. 可以
 
 B. 不可以
+
+8 应用配置管理
+_____________________________________________________________________________________________________________________
+
+单选  3.ServiceAccount创建完成，其对应的Secret信息由哪个组件更新
+
+A. kube-apiserver
+
+B. kube-controller-manager
+
+C. kube-scheduler
+
+D. kubelet
+正确答案： B
+
+多选  7.InitContainer理解正确的有
+
+A. InitContainer先于普通容器启动执行
+
+B. 多个InitContainer的执行是按定义次序串行执行，而多个普通容器是并行执行
+
+C. InitContainer执行成功后就结束退出，而普通容器可以一直执行
+
+D. Pod重启时，InitContainer会再次执行      **************************
+正确答案： A B C D
+
+多选  8.如下哪些方式创建的Pod可以使用ConfigMap  
+
+A. Kubectl
+
+B. Dashboard
+
+C. kubelet mainifests
+
+D. kubelet url
+正确答案： A B
+
+kubectl是k8s集群的   客户端  ，用户通过kubectl连接到集群的apiserver，并将命令传递到master上，然后master再将命令分发到node节点上执行。
+
+多选  10.下面容器资源申明合理的是
+
+A. resources: requests: cpu: 100m limits: cpu: 500m
+
+B. resources: requests: cpu: 200m limits: cpu: 100m      应该是限制写反了吧   
+
+C. resources: requests: cpu: 100m memory: 64Mi
+
+D. resources: limits: cpu: 100m
+正确答案： A C D
+
