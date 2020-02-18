@@ -363,7 +363,7 @@ C. Livenss Probe和 Readiness Probe的探测方式是一致的
 
 D. Liveness Probe主要面向有状态服务
 
-###################     11  监控与日志   ##########################
+###################     12  监控与日志   ##########################
 判断  4.从功能性的角度而言，Heapster的Sink机制比Metrics-Server更强大。 正确
 
 正确
@@ -387,7 +387,7 @@ B. ARMS性能监控
 C. AHAS架构感知监控
 
 
-################### 12讲：Kubernetes网络概念及策略控   #############################
+################### 13讲：Kubernetes网络概念及策略控   #############################
 
 单选  3.一个只有spec的network policy，其他条件为空，意味着哪种行为？  B  
 
@@ -442,3 +442,241 @@ C. 数据分析与增值服务
 
 D. 开源场景的整合
 
+############## 14     Kubernetes Services  ##############
+ 单选  1.Kubernetes的Service的对象中怎么声明选择负载均衡的后端Pod？
+
+A. 通过Pod的label选择
+
+B. 通过Pod的IP选择
+
+C. 通过Pod的annotation选择
+
+D. 通过Pod的镜像选择
+正确答案： A
+
+service 模版  这个service代理了所有具有MyApp标签的pod
+ {    "kind": "Service”,    当前资源类型为  service  
+        "apiVersion": "v1”,     版本
+          "metadata”: 元数据
+                 {        "name": "my-service"    },     资源的名字  是   my-service b 
+           "spec": {        "selector”:  选择器
+                            {            "app": "MyApp"        },    app name     
+                                     "ports": [            端口
+                       {                "protocol": "TCP”,      tcp 协议       
+                                            "port": 80,                     访问端口                     
+                                       "targetPort": 9376            }   重定向刀9376端口     ]    }
+                                       
+   ##   service：
+      服务，是一个虚拟概念，逻辑上代理后端pod。众所周知，pod生命周期短，状态不稳定，pod异常后新生成的pod ip会发生变化，之前pod的访问方式均不可达。通过service对pod做代理，service有固定的ip和port，ip:port组合自动关联后端pod，即使pod发生改变，kubernetes内部更新这组关联关系，使得service能够匹配到新的pod。这样，通过service提供的固定ip，用户再也不用关心需要访问哪个pod，以及pod是否发生改变，大大提高了服务质量。
+      
+  #在Pod中，应用可以直接通过资源的名字直接访问的资源是 service
+  
+  单选  3.Kubernetes clusterIP的Service的域名解析响应是什么DNS记录类型？
+
+A. CNAME
+
+B. A
+
+C. TXT
+
+D. SOA
+正确答案： B  
+## dns 类型 
+soa   起始授权机构(SOA, Start Of Authority)的资源记录，描述了域名的管理员、电子邮件地址，和一些时间参数
+A   A (Address) 记录是用来指定主机名（或域名）对应的IP地址记录。用户可以将该域名下的网站服务器指向到自己的web server上。同时也可以设置您域名的子域    名。通俗来说A记录就是服务器的IP,域名绑定A记录就是告诉DNS,当你输入域名的时候给你引导向设置在DNS的A记录所对应的服务器 
+
+Cname (Canonical Name)记录，通常也被称为规范名字 kəˈnɒnɪkl 规范的
+     CNAME是别名解析，别名解析是先将域名解析到主机别名再转跳到IP，这样主机IP改变了不用重新解析。
+MX  MX记录也叫做邮件路由记录，用户可以将该域名下的邮件服务器指向到自己的mail server上，然后即可自行操控所有的邮箱设置。   
+NS（Name Server）记录是域名服务器记录 NS记录是指定由哪个DNS服务器解析你的域名。 
+TXT TXT记录一般是为某条记录设置说明
+ AAAA   记录是用来指定主机名（或域名）对应的IPv6地址记录。
+ SRV 记录了哪台计算机提供了哪个服务。格式为：服务的名字.协议的类型（例如：_example-server._tcp）
+ 
+ 判断  5.Pod可以直接用Service名来访问同一个集群里的Service，不管Pod和Service在不在一个Namespace。  错误
+
+正确
+
+错误
+
+同一个namespace  可以直接servicename访问  不同的namespace要加上namespace访问  访问方式 {serviceName}.{nameSpace}
+
+9.下列哪些方式可以作为Pod访问Service的途径？  A B  D 
+
+A. 环境变量
+
+B. Service名
+
+C. Service的Label
+
+D. Service的ClusterIP
+
+多选  10.下列哪些类型的Service用于向集群外部暴露访问？ A C 
+
+A. NodePort
+
+B. ClusterIP
+
+C. LoadBalancer
+
+D. ExternalName
+
+## 建LoadBalancer类型的Service会自动创建和绑定外部LoadBalancer到节点映射的NodePort上。
+
+
+###################  15  深入剖析 Linux 容器   ######### 
+
+单选  1.docker run –net=none busybox top，请问这个容器会有自己的netns（网络namespace 文件）吗？  A   
+
+A. 有，none也是一种网络模式，所以有       
+
+B. 没有，都是none了，所以没有netns
+–net=none   ###  可以自行配置网络，让容器达到跟平常一样具有访问网络的权限
+
+单选  2.一个docker容器，在宿主机上有几个进程（除了容器内部进程之外的其他进程）？  C
+
+A. 3个，docker进程，contanerd-shim进程和runc进程
+
+B. 2个，contanerd-shim进程和runc进程
+
+C. 1个，contanerd-shim进程
+docker容器内的一个进程对应于宿主机器上的一个进程。容器内的进程，与相对应的宿主进程，由相同的uid、gid拥有
+
+单选  3.宿主机上能否看见容器内的进程？ B 
+
+A. 不能，因为容器有自己的pid namespace，隔离了宿主机上的进程可见性
+
+B. 能，只是容器内外看到的进程pid不一样
+正确答案： B
+
+查看容器日志的命令   docker logs $container
+ runc 的作用是什么一种oci运行时，负责创建容器   常用的就是docker  run  命令 就是创建容器 的
+ 
+ 单选  6.要创建一个共享宿主机pid namespace的容器，命令是？
+
+A. docker run --name demo-1 –pid non-container busybox top
+
+B. docker run --name demo-2 –pid host busybox top
+
+C. docker run --name demo-1 –pid container:host busybox top
+正确答案： B
+单选  7.运行 docker stop $container 命令停止一个容器后，容器的相关文件还在吗？ A
+
+A. 在，stop只是停止了进程，文件等内容还是在宿主机上的
+B. 不在，进程消失了，容器全部都不见了
+好像是 用的volume  数据卷  持久化之类的     文件还在的
+
+单选  8.docker在宿主机上最多可以创建多少个容器？ C 
+
+A. 1000
+
+B. 和宿主机的cpu/memory 资源有关系
+
+C. 不一定
+默认的情况下，docker 没有对容器进行硬件资源的限制
+Docker 的资源限制和隔离完全基于 Linux cgroups
+
+###  Docker  是什莫  
+     Docker 本身并不是容器，它是创建容器的工具，是应用容器引擎。
+   Docker包括三个基本概念：
+镜像（Image） 一个特殊的文件系统
+容器（Container） 镜像运行时的实体
+仓库（Repository）集中存放镜像文件的地方
+
+Docker - Build, Ship, and Run Any App, Anywhere
+Build（构建镜像）：镜像就像是集装箱包括文件以及运行环境等等资源。
+Ship（运输镜像）：主机和仓库间运输，这里的仓库就像是超级码头一样。
+Run （运行镜像）：运行的镜像就是一个容器，容器就是运行程序的地方。
+ 
+ 
+ 判断  9.已运行 docker run -d -t --name demo ubuntu top 和 docker run --name demo-x --pid container:demo ubuntu ps 命令，是否可以在 demo-x 容器内停止容器？   正确
+
+正确
+
+错误
+
+判断  10.已运行 docker run -d -t --name demo ubuntu top 和 docker run --name demo-x --pid container:demo ubuntu ps 命令，如果 demo 容器退出了，正在运行的 demo-x 容器是否会退出？ 正确 
+
+正确
+
+错误
+
+-d  后台启动的 
+
+################ 16   etcd 基本原理解析         #############
+
+## 什么是 etcd   
+    etcd是CoreOS团队于2013年6月发起的开源项目，它的目标是构建一个高可用的分布式键值(key-value)数据库。etcd内部采用raft协议作为一致性算法，etcd基于Go语言实现。
+    
+    quorum  = (n+1)/2  3+1  /2 = 2 
+    3 个节点容忍1个故障   3-2 =1 
+    5 个节点容忍2个故障   
+    
+    单选  1.关于 etcd watch，以下说法错误的是？  C 
+
+A. etcd watch 支持订阅指定 key 的最新数据变化。
+
+B. etcd watch 支持订阅指定 key 前缀的数据变化。
+
+C. etcd server 推送数据更新时，只包含数据变化的事件，不包含数据的内容。
+
+D. etcd 支持订阅过去一段时间范围内的数据。
+
+单选  4.关于 etcd 的数据，以下说法错误的是？ C 
+
+A. etcd 支持存储多个版本的数据，允许查询指定 key 历史版本的数据。
+
+B. etcd 为了控制数据总空间，会周期性的清理数据的历史版本。
+
+C. etcd 支持修改旧版本的数据。
+
+D. etcd 中，数据以二进制的方式存储在磁盘中。  
+由于ETCD数据存储多版本数据，随着写入的主键增加历史版本需要定时清理，　  默认的历史数据是不会清理的，数据达到2G就不能写入，必须要清理压缩历史数据才能继续写入；
+判断  5.etcd 集群中存在 3 个 server 时，重启其中一个 server 完全不会影响服务。
+
+正确
+
+错误
+正确答案： 错误
+
+多选  7.关于 etcd lease，以下说法正确的是？
+
+A. etcd 创建 lease 对象时，需要指定一个时间作为其超时时间。
+
+B. lease 对象被创建后，超过设定的时间一定会被系统自动回收。
+
+C. 将 key 关联到 lease 对象上，当 lease 对象超时后，key 会被系统自动回收。
+
+D. etcd 支持将多个 key 关联到同一个 lease 对象上，从而大幅降低刷新 lease 的性能开销。
+正确答案： A C D
+
+多选  9.关于 etcd 提供的 API，以下说法正确的是？
+
+A. etcd 提供了 KeyValue 的存储结构，支持指定 key 查询数据。
+
+B. etcd 提供了 Watch 接口，可以用于订阅 etcd 中数据的更新。
+
+C. etcd 提供了基本的事务操作接口，etcd 确保单条事务执行的原子性。  支持事务  有一个commit  方法  涉及到事务 
+
+D. etcd 支持范围查询。
+正确答案： A B C D
+lease 对象
+Cluster：向集群里增加etcd服务端节点之类，属于管理员操作。
+KV：我们主要使用的功能，即操作K-V。
+Lease：租约相关操作，比如申请一个TTL=10秒的租约。
+Watcher：观察订阅，从而监听最新的数据变化。
+Auth：管理etcd的用户和权限，属于管理员操作。
+Maintenance：维护etcd，比如主动迁移etcd的leader节点，属于管理员操作。
+
+lease 功能
+Grant：分配一个租约。
+Revoke：释放一个租约。
+TimeToLive：获取剩余TTL时间。
+Leases：列举所有etcd中的租约。
+KeepAlive：自动定时的续约某个租约。
+KeepAliveOnce：为某个租约续约一次。
+Close：貌似是关闭当前客户端建立的所有租约
+
+事务Tnx
+etcd中事务是原子执行的，只支持if … then … else …这种表达，能实现一些有意思的场景。
+首先，我们需要开启一个事务，这是通过KV对象的方法实现的
