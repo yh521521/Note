@@ -70,7 +70,7 @@ D. deployment.Labels、deployment.Spec.Selector、deployment.Spec.Template.Label
 正确答案： C
 
 
-##7 应用编排与管理：Job 和 DaemonSet
+## 7 应用编排与管理：Job 和 DaemonSet
 
 
 scale up 增大 提高  scale down  缩小 减弱
@@ -153,7 +153,7 @@ B. 多个InitContainer的执行是按定义次序串行执行，而多个普通�
 
 C. InitContainer执行成功后就结束退出，而普通容器可以一直执行
 
-D. Pod重启时，InitContainer会再次执行      **************************
+D. Pod重启时，InitContainer会再次执行     
 正确答案： A B C D
 
 多选  8.如下哪些方式创建的Pod可以使用ConfigMap  
@@ -371,6 +371,8 @@ C. Livenss Probe和 Readiness Probe的探测方式是一致的
 D. Liveness Probe主要面向有状态服务
 
 ## 12  监控与日志   
+
+
 判断  4.从功能性的角度而言，Heapster的Sink机制比Metrics-Server更强大。 正确
 
 正确
