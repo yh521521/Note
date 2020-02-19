@@ -1,4 +1,4 @@
-**cloudNative-k8s
+## cloudNative-k8s
 
 
 
@@ -24,9 +24,6 @@ A. MaxUnavailable不可以设置为0，否则无法发布
 B. MaxUnavailable可以设置超过replicas
 
 C. MaxUnavailable可以和MaxSurge同时设置为0
-
-
-
 D. MaxUnavailable可以设置超过100%
 正确答案： B
 
@@ -134,7 +131,7 @@ A. 可以
 B. 不可以
 
 
-##8 应用配置管理
+## 8 应用配置管理
 
 
 单选  3.ServiceAccount创建完成，其对应的Secret信息由哪个组件更新
@@ -453,7 +450,7 @@ C. 数据分析与增值服务
 D. 开源场景的整合
 
 
-##14     Kubernetes Services 
+## 14     Kubernetes Services 
 
 
  单选  1.Kubernetes的Service的对象中怎么声明选择负载均衡的后端Pod？
