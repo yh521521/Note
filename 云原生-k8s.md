@@ -1,10 +1,13 @@
-**云原生-k8s**
+**cloudNative-k8s
 
 
 
 ReplicaSet对象:得先说说ReplicationController（简称为RC）。在旧版本的Kubernetes中，只有ReplicationController对象。它的主要作用是**确保Pod以你指定的副本数运行**，即如果有容器异常退出，会自动创建新的 Pod 来替代；而异常多出来的容器也会自动回收。虽然 ReplicaSet 也可以独立使用，但建议使用 Deployment 来自动管理 ReplicaSet，这样就无需担心跟其他机制的不兼容问题（比如 ReplicaSet 不支持 rolling-update 但 Deployment 支持），并且Deployment还支持版本记录、回滚、暂停升级等高级特性。Deployment 的详细介绍和使用方法参见。
 
-第 6讲____________________________________________________________________________________________________________________________
+
+## 6应用编排与管理： Deployment
+
+
  3.以下关于paused说法错误的是： d 
 
 A. 可以在deployment发布的过程中修改paused字段
@@ -21,6 +24,8 @@ A. MaxUnavailable不可以设置为0，否则无法发布
 B. MaxUnavailable可以设置超过replicas
 
 C. MaxUnavailable可以和MaxSurge同时设置为0
+
+
 
 D. MaxUnavailable可以设置超过100%
 正确答案： B
@@ -68,7 +73,9 @@ D. deployment.Labels、deployment.Spec.Selector、deployment.Spec.Template.Label
 正确答案： C
 
 
-第7讲：应用编排与管理：Job 和 DaemonSet
+##7 应用编排与管理：Job 和 DaemonSet
+
+
 scale up 增大 提高  scale down  缩小 减弱
 
 parallelism   并行执行的pod 数量  
@@ -126,8 +133,9 @@ A. 可以
 
 B. 不可以
 
-8 应用配置管理
-_____________________________________________________________________________________________________________________
+
+##8 应用配置管理
+
 
 单选  3.ServiceAccount创建完成，其对应的Secret信息由哪个组件更新
 
@@ -175,8 +183,8 @@ C. resources: requests: cpu: 100m memory: 64Mi
 D. resources: limits: cpu: 100m
 正确答案： A C D
 
-9
-******************************************************************************************************
+## 9 应用存储和持久化数据卷 - 核心知识
+
  *1 volumes  k8s中 的数据卷  也就是存放数据的地方   持久化数据  Volume主要是为了存储一些有必要保存的数据,
    而Persistent Volume主要是为了管理集群的存储。
 *2 Persistent Volume和Persistent Volume Claim类似Pods和Nodes的关系，创建Pods需要消耗一定的Nodes的资源。而Persistent Volume则是提供了各种存储资源，而Persistent Volume Claim提出需要的存储标准，然后从现有存储资源中匹配或者动态建立新的资源，最后将两者进行绑定。
@@ -241,7 +249,9 @@ CSI(Container Storage Interface)不是一个卷插件，它是用于创建自定
 
 
 
-#####################  10  存储快照 和拓扑调度    ####################
+##  10  存储快照 和拓扑调度 
+
+
 单选  1.在Kubernetes中使用自定义的拓扑（如rack, foo, bar）是否需要相关组件做修改？B   可以自定义 所以无需做出修改
 
 A. 是
@@ -305,13 +315,13 @@ C. 在静态（预）创建的PV上的.spec.nodeAffinity添加对使用该PV的P
 D. 在需要动态创建的PV所使用的StorageClass的.allowedTopologies中限制动态创建的存储能被使用的拓扑限制
 
 
-##########     11  应用观测性   #########
+##  11  应用观测性   
 
 Always     总是重启
 OnFailure  失败才重启
 Never      永远不重启
 
-##  k8s支持存活livenessProbe和就绪readinessProbe两种探针
+ #  k8s支持存活livenessProbe和就绪readinessProbe两种探针
 
 单选  1.kubectl-debug如何使用自定义的工具进行Pod调试？  A  debug-agent：部署在K8s的node上，用于启动关联  排错 工具容器；
 
@@ -363,7 +373,7 @@ C. Livenss Probe和 Readiness Probe的探测方式是一致的
 
 D. Liveness Probe主要面向有状态服务
 
-###################     12  监控与日志   ##########################
+## 12  监控与日志   
 判断  4.从功能性的角度而言，Heapster的Sink机制比Metrics-Server更强大。 正确
 
 正确
@@ -387,7 +397,7 @@ B. ARMS性能监控
 C. AHAS架构感知监控
 
 
-################### 13讲：Kubernetes网络概念及策略控   #############################
+## 13 Kubernetes网络概念及策略控 
 
 单选  3.一个只有spec的network policy，其他条件为空，意味着哪种行为？  B  
 
@@ -442,7 +452,10 @@ C. 数据分析与增值服务
 
 D. 开源场景的整合
 
-############## 14     Kubernetes Services  ##############
+
+##14     Kubernetes Services 
+
+
  单选  1.Kubernetes的Service的对象中怎么声明选择负载均衡的后端Pod？
 
 A. 通过Pod的label选择
@@ -524,7 +537,10 @@ D. ExternalName
 ## 建LoadBalancer类型的Service会自动创建和绑定外部LoadBalancer到节点映射的NodePort上。
 
 
-###################  15  深入剖析 Linux 容器   ######### 
+
+## 15  深入剖析 Linux 容器  
+
+
 
 单选  1.docker run –net=none busybox top，请问这个容器会有自己的netns（网络namespace 文件）吗？  A   
 
@@ -603,7 +619,9 @@ Run （运行镜像）：运行的镜像就是一个容器，容器就是运行�
 
 -d  后台启动的 
 
-################ 16   etcd 基本原理解析         #############
+
+## 16   etcd 基本原理解析     
+
 
 ## 什么是 etcd   
     etcd是CoreOS团队于2013年6月发起的开源项目，它的目标是构建一个高可用的分布式键值(key-value)数据库。etcd内部采用raft协议作为一致性算法，etcd基于Go语言实现。
