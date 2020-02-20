@@ -19,9 +19,13 @@ CloundNative-2
           
           
           
+
      
  
-  ![](img/device-plugin.png)  
+ ![](img/device-plugin.png)  
+
+
+
 
 
           第一步是 Device Plugin 的注册，需要 Kubernetes 知道要跟哪个 Device Plugin 进行交互。这是因为一个节点上可能有多个设备，
