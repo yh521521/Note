@@ -95,6 +95,53 @@ CloundNative-2
 # 什莫是CRD 对象
           k8s系统中controller扮演着重要角色，开发自定义controller是深入学习和理解controller的有效途径
           自定义API对象（Custom Resource Definition）自定义API对象（也就是CRD）
+          
+          Attach  挂载
+          mount  本地设备 挂载到 Pod 在节点上的一个子目录中。
+          bind 绑定
+          Provision  提供 规定 就是由谁去创建的
+          Detach 分离
+          unmount 解除挂载
+          Pending 在等待  待定
+          bound bind  过去分词 已经绑定过
+          Reconcile 调和
+  
+  ## AD controller 核心对象  核心逻辑
+          DesiredStateofWorld 是集群中预期要达到的数据卷的挂载状态；
+          ActualStateOfWorld 则是集群内部实际存在的数据卷挂载状态。
+
+          desiredStateOfWorldPopulator 和 Reconcile
+          
+          desiredStateOfWorldPopulator 主要是用来同步集群的一些数据以及 DSW、ASW 数据的更新，它会把集群里面，
+          比如说我们创建一个新的 PVC、创建一个新的 Pod 的时候，我们会把这些数据的状态同步到 DSW 中；
+
+          Reconcile 则会根据 DSW 和 ASW 对象的状态做状态同步。它会把 ASW 状态变成 DSW 状态，在这个状态的转变过程中，
+          它会去执行 Attach、Detach 等操作。
+   # Volume Plugins
+               我们之前提到的 PV Controller、AD Controller 以及 Volume Manager 其实都是通过调用 Volume Plugin
+               提供的接口，比如 Provision、Delete、Attach、Detach 等去做一些 PV、PVC 的管理。
+               而这些接口的具体实现逻辑是放在 VolumePlugin 中的
+                    In-Tree 表示源码是放在 Kubernetes 内部的，和 Kubernetes 一起发布、管理与迭代，缺点及时迭代速度慢、灵活性差；
+                  Out-of-Tree 类的 Volume Plugins 的代码独立于 Kubernetes，它是由存储商提供实现的，
+                  目前主要有 Flexvolume 和 CSI 两种实现机制，可以根据存储类型实现不同的存储插件。
+                  所以我们比较推崇 Out-of-Tree 这种实现逻辑
+                  
+          CSI 是通过 CRD 的形式实现的，所以 CSI 引入了这么几个对象类型：VolumeAttachment、CSINode、CSIDriver 
+          以及 CSI Controller Server 与 CSI Node Server 的一个实现。     
+         
+         VolumeAttachment 描述一个 Volume 卷在一个 Pod 使用中挂载、卸载的相关信息。例如，对一个卷在某个节点上的挂载，
+              我们通过 VolumeAttachment 对该挂载进行跟踪。AD Controller 创建一个 VolumeAttachment，
+              而 External-attacher 则通过观察该   VolumeAttachment，根据其状态来进行挂载和卸载操作。
+            CSIDriver，它描述了集群中所部署的 CSI Plugin 列表，需要管理员根据插件类型进行创建。 
+            CSINode，它是集群中的节点信息，由 node-driver-registrar 在启动时创建。
+            它的作用是每一个新的 CSI Plugin 注册后，都会在 CSINode 列表里添加一个 CSINode 信息。
+  ##    DaemonSet 对象       
+            DaemonSet用于再集群中的全部节点上同时运行一份指定的pod资源副本，后续新加入的工作节点也会自动创建一个相关的pod对象，
+            当从集群中移除节点时，此类pod对象也将被自动回收而无须重建。也可以使用节点选择器及节点标签指定仅在部分
+            具有特定特征的节点上运行指定的pod对象。
+![](img/volume-attach.png)
+
+
 
 # in-tree  和out-of-tree 区别
           存储卷接入方案（In-Tree）
@@ -109,5 +156,47 @@ CloundNative-2
 
           C. Volume Manager只能负责Mount操作
           
-          
+          多选  10.关于CSI组件，下面说法正确的有？
+
+          A. PV Controller调用External Provisioner实现创建数据卷功能
+
+          B. 有些存储类型可以不部署External Attacher
+
+          C. Kubelet直接调用CSI Plugin实现数据卷的Mount/Unmount操作
+
+          D. CSI Controller Server和CSI Node Server每个节点都需要部署
+          正确答案： B C
   
+  
+          多选  8.关于Flexvolume，下面说法正确的有？
+
+          A. Flexvolume可以支持Attach操作
+
+          B. Flexvolume是一个守护进程
+
+          C. Flexvolume可以支持Provision操作
+
+          D. Flexvolume是运行在主机空间的程序
+          正确答案： A D
+          
+          多选  6.关于pv、pvc绑定，下面说法正确的有？
+
+          A. 必须Access Modes相同的pv、pvc才可以绑定
+
+          B. PVC定义的Capacity必须等于PV的Capacity才可以绑定
+
+          C. 可以通过Selector配置特定的PVC、PV绑定
+
+          D. PVC找不到匹配的PV时，才会触发Provisioner创建PV
+          正确答案： C D
+          
+               单选  5.关于存储卷回收策略，下面说法错误的是？
+
+               A. Retain模式：PVC删除后，PV依然存在
+
+               B. 动态生成的PV，默认为Retain模式
+
+               C. Delete模式：PVC删除后，PV同时被删除
+
+               D. Recycle模式：PVC删除后，PV可再次使用
+               正确答案： B
