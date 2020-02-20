@@ -126,6 +126,7 @@ CloundNative-2
 
           Reconcile 则会根据 DSW 和 ASW 对象的状态做状态同步。它会把 ASW 状态变成 DSW 状态，在这个状态的转变过程中，
           它会去执行 Attach、Detach 等操作。
+          ![](img/volume.png)
    # Volume Plugins
                我们之前提到的 PV Controller、AD Controller 以及 Volume Manager 其实都是通过调用 Volume Plugin
                提供的接口，比如 Provision、Delete、Attach、Detach 等去做一些 PV、PVC 的管理。
@@ -150,7 +151,12 @@ CloundNative-2
             具有特定特征的节点上运行指定的pod对象。
 ![](img/volume-attach.png)
 
+![](img/volume-plugin.png)
 
+![](img/ad-controller.png)
+
+![](img/pv.png)
+![](img/pvc.png)
 
 # in-tree  和out-of-tree 区别
           存储卷接入方案（In-Tree）
