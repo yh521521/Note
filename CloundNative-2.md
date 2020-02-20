@@ -91,11 +91,23 @@ CloundNative-2
 因此目前的 Device Plugin 设计涵盖的场景其实是非常单一的， 是一个可用但是不好用的状态。这就能解释为什么像 Nvidia 这些厂商都实现了一个基于 Kubernetes 上游代码进行 fork 了自己解决方案，也是不得已而为之。
   
 ##  21  Kubernetes存储架构及插件使
+          转自 https://www.cnblogs.com/laobeipai/p/12311179.html  感觉很详细
+# 什莫是CRD 对象
+          k8s系统中controller扮演着重要角色，开发自定义controller是深入学习和理解controller的有效途径
+          自定义API对象（Custom Resource Definition）自定义API对象（也就是CRD）
+
+# in-tree  和out-of-tree 区别
+          存储卷接入方案（In-Tree）
+          插件机制（Out-Of-Tree），允许其他类型的存储服务接入 Kubernetes 系统服务
+
  
-单选  1.关于Volume的Provision、Attach、Mount操作，下面说法错误的是？ c
+          单选  1.关于Volume的Provision、Attach、Mount操作，下面说法错误的是？ C
 
-A. PV controller只能负责Provision操作
+          A. PV controller只能负责Provision操作
 
-B. AD Controller只能负责Attach操作
+          B. AD Controller只能负责Attach操作
 
-C. Volume Manager只能负责Mount操作
+          C. Volume Manager只能负责Mount操作
+          
+          
+  
