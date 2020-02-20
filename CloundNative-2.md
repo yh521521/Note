@@ -90,3 +90,12 @@ CloundNative-2
 
 因此目前的 Device Plugin 设计涵盖的场景其实是非常单一的， 是一个可用但是不好用的状态。这就能解释为什么像 Nvidia 这些厂商都实现了一个基于 Kubernetes 上游代码进行 fork 了自己解决方案，也是不得已而为之。
   
+##  21  Kubernetes存储架构及插件使
+ 
+单选  1.关于Volume的Provision、Attach、Mount操作，下面说法错误的是？ c
+
+A. PV controller只能负责Provision操作
+
+B. AD Controller只能负责Attach操作
+
+C. Volume Manager只能负责Mount操作
