@@ -28,7 +28,7 @@ CloundNative-2
 
 
 
- ![](img/device-plugin.png)  
+ ![](img/https://github.com/yh521521/Note/blob/master/img/device-plugin.png)  
 
 
 
