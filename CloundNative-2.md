@@ -22,11 +22,13 @@ CloundNative-2
 
      
  
+   
+
+
+
+
+
  ![](img/device-plugin.png)  
-
-
-
-
 
           第一步是 Device Plugin 的注册，需要 Kubernetes 知道要跟哪个 Device Plugin 进行交互。这是因为一个节点上可能有多个设备，
           需要 Device Plugin 以客户端的身份向 Kubelet 汇报三件事情：我是谁？就是 Device Plugin 所管理的设备名称，是 GPU 还是 RDMA；
