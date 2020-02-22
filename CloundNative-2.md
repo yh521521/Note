@@ -7,21 +7,21 @@ CloundNative-2
      (kubernetes可管理的资源包括CPU、内存和存储资源)可以让kubelet使用(这一点与操作系统一样，所有设备厂商自己实现驱动
      
      1 Device Plugin 中API可以用来反映设备健康状况的方法名称是？ C
-
+    
           A. Allocate
-
+    
           B. Register
-
+    
           C. ListAndWatch
-
+    
           D. PreStartContainer
-          
-          
-          
-          
 
-     
- 
+
+​          
+​          
+
+​     
+
    
 
 
@@ -42,43 +42,43 @@ CloundNative-2
           第一步是 Device Plugin 的注册，需要 Kubernetes 知道要跟哪个 Device Plugin 进行交互。这是因为一个节点上可能有多个设备，
           需要 Device Plugin 以客户端的身份向 Kubelet 汇报三件事情：我是谁？就是 Device Plugin 所管理的设备名称，是 GPU 还是 RDMA；
           我在哪？就是插件自身监听的 unis socket 所在的文件位置，让 kubelet 能够调用自己；交互协议，即 API 的版本号；
-
+    
           第二步是服务启动，Device Plugin 会启动一个 GRPC 的 server。在此之后 Device Plugin 一直以这个服务器的身份提供服务让 kubelet 来访问，
           而监听地址和提供 API 的版本就已经在第一步完成了；
-
+    
           第三步，当该 GRPC server 启动之后，kubelet 会建立一个到 Device Plugin 的 ListAndWatch 的长连接， 
           用来发现设备 ID 以及设备的健康状态。当 Device Plugin 检测到某个设备不健康的时候，就会主动通知 kubelet。
           而此时如果这个设备处于空闲状态，kubelet 会将其移除可分配的列表。但是当这个设备已经被某个 Pod 所使用的时候，
           kubelet 就不会做任何事情，如果此时杀掉这个 Pod 是一个很危险的操作；
-
+    
           第四步，kubelet 会将这些设备暴露到 Node 节点的状态中，把设备数量发送到 Kubernetes 的 api-server 中。
           后续调度器可以根据这些信息进行调度。
           
           单选  3.Device Plugin的AllocateResponse中可以接收如下哪些参数? ABC
-
+    
           A. devices
-
+    
           B. mounts
-
+    
           C. envs
-
+    
           D. cpus
           正确答案： A B C
         9.使用Kubernetes管理GPU资源可以利用Kubernetes的统一调度能力，使资源使用方能够用即申请，完即释放，从而盘活整个GPU资源池。
-
+    
           正确
-
+    
           错误
           正确答案： 正确  
-
+    
           多选  10.Kubernetes通过哪些内部机制支持GPU管理？ bc 
-
+    
           A. CNI Plugin
-
+    
           B. Device Plugin
-
+    
           C. Extended Plugin
-
+    
           D. Cloud Provider
 
 
@@ -86,8 +86,8 @@ CloundNative-2
 
      extend resources通用的模式支持不同的异构设备，包括 RDMA、FPGA、AMD GPU 等等，而不仅仅是为 Nvidia GPU 设计的；
      evice Plugin Framework 允许第三方设备提供商以外置的方式对设备进行全生命周期的管理，而 Device Plugin Framework 建立 Kubernetes 和 Device Plugin 模块之间的桥梁。它一方面负责设备信息的上报到 Kubernetes，另一方面负责设备的调度选择。
-     
-     
+
+
    # Device Plugin 机制的缺陷
    需要指出的是 Device Plugin 整个工作机制和流程上，实际上跟学术界和工业界的真实场景有比较大的差异。这里最大的问题在于 GPU 资源的调度工作，实际上都是在 kubelet 上完成的。
 
@@ -98,7 +98,7 @@ CloundNative-2
 更为棘手的是在 Device Plugin 的设计和实现中，像 Allocate 和 ListAndWatch 的 API 去增加可扩展的参数也是没有作用的。这就是当我们使用一些比较复杂的设备使用需求的时候，实际上是无法通过 Device Plugin 来扩展 API 实现的。
 
 因此目前的 Device Plugin 设计涵盖的场景其实是非常单一的， 是一个可用但是不好用的状态。这就能解释为什么像 Nvidia 这些厂商都实现了一个基于 Kubernetes 上游代码进行 fork 了自己解决方案，也是不得已而为之。
-  
+
 ##  21  Kubernetes存储架构及插件使
           转自 https://www.cnblogs.com/laobeipai/p/12311179.html  感觉很详细
 # 什莫是CRD 对象
@@ -114,16 +114,16 @@ CloundNative-2
           Pending 在等待  待定
           bound bind  过去分词 已经绑定过
           Reconcile 调和
-  
+
   ## AD controller 核心对象  核心逻辑
           DesiredStateofWorld 是集群中预期要达到的数据卷的挂载状态；
           ActualStateOfWorld 则是集群内部实际存在的数据卷挂载状态。
-
+    
           desiredStateOfWorldPopulator 和 Reconcile
           
           desiredStateOfWorldPopulator 主要是用来同步集群的一些数据以及 DSW、ASW 数据的更新，它会把集群里面，
           比如说我们创建一个新的 PVC、创建一个新的 Pod 的时候，我们会把这些数据的状态同步到 DSW 中；
-
+    
           Reconcile 则会根据 DSW 和 ASW 对象的状态做状态同步。它会把 ASW 状态变成 DSW 状态，在这个状态的转变过程中，
           它会去执行 Attach、Detach 等操作。
           ![](img/volume.png)
@@ -163,7 +163,7 @@ CloundNative-2
           存储卷接入方案（In-Tree）
           插件机制（Out-Of-Tree），允许其他类型的存储服务接入 Kubernetes 系统服务
 
- 
+
           单选  1.关于Volume的Provision、Attach、Mount操作，下面说法错误的是？ C
 
           A. PV controller只能负责Provision操作
@@ -171,7 +171,7 @@ CloundNative-2
           B. AD Controller只能负责Attach操作
 
           C. Volume Manager只能负责Mount操作
-          
+
           多选  10.关于CSI组件，下面说法正确的有？
 
           A. PV Controller调用External Provisioner实现创建数据卷功能
@@ -182,8 +182,8 @@ CloundNative-2
 
           D. CSI Controller Server和CSI Node Server每个节点都需要部署
           正确答案： B C
-  
-  
+
+
           多选  8.关于Flexvolume，下面说法正确的有？
 
           A. Flexvolume可以支持Attach操作
@@ -196,23 +196,73 @@ CloundNative-2
           正确答案： A D
           
           多选  6.关于pv、pvc绑定，下面说法正确的有？
-
+    
           A. 必须Access Modes相同的pv、pvc才可以绑定
-
+    
           B. PVC定义的Capacity必须等于PV的Capacity才可以绑定
-
+    
           C. 可以通过Selector配置特定的PVC、PV绑定
-
+    
           D. PVC找不到匹配的PV时，才会触发Provisioner创建PV
           正确答案： C D
           
                单选  5.关于存储卷回收策略，下面说法错误的是？
-
+    
                A. Retain模式：PVC删除后，PV依然存在
-
+    
                B. 动态生成的PV，默认为Retain模式
-
+    
                C. Delete模式：PVC删除后，PV同时被删除
-
+    
                D. Recycle模式：PVC删除后，PV可再次使用
                正确答案： B
+
+​    	启动的时候怎么将默认的参数打印出来呢?  B. --write-config-to
+
+​              单选  2.以下扩展点哪个是scheduler extender不支持的？
+
+​    A. filter
+
+​    B. prioritize
+
+   C. bind
+
+   D. prebind
+正确答案： D
+
+单选  3.下列关于打分器（prioritize）的作用描述不正确的是？
+
+A. 能用来确保Pod之间的亲和部署
+
+B. 用来尽量满足Pod和Node亲和部署
+
+C. 支持Pod在节点上尽量打散
+
+D. 可以用来支持Pod尽量调度到已有此镜像的节点
+正确答案： A
+
+单选  4.调度队列的排序，默认规则是什么？ c
+
+A. 随机排序
+
+B. FIFO
+
+C. 按照pod的优先级，在失败重试的时候会有backOff降级
+
+单选  6.调度节点选择的逻辑是？ c 
+
+A. 随机选择节点用于过滤
+
+B. 优先把一个Zone的节点过滤完之后，再选择下一个Zone
+
+C. 选择节点按照Zone分组进行RoundRobine选择，使得取样模板在zone上更均衡
+
+
+单选  7.TopologySpreadConstraint中的MaxSkew如果为2，topology设置为hostname，whenUnsatisfiable为DoNotSchedule，目前有三个宿主机，要分配7个pod，那么不可能的排序是？
+
+A. 3/3/1
+
+B. 3/2/2
+
+C. 4/2/1
+正确答案： C
