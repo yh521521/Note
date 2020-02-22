@@ -1,6 +1,6 @@
 # CloudNative -3
 
-## 有状态应用编排：StatefulSet
+## 22有状态应用编排：StatefulSet
 
  sts  statefulset缩写 
 
@@ -33,13 +33,13 @@ replicas  期望数量
 > > > > >
 > > > > > partition 滚动升级时   保留旧版本pod  数量
 
-单选 *1.以下关于ControllerRevision历史版本说法正确的是？b*
+单选 *1.以下关于ControllerRevision历史版本说法正确的是？**B***
 
 A. 所有历史版本都会作为ControllerRevision保留
 
 B. pod label中的controller-revision-hash与对应版本ControllerRevision name一致
 
-C. revisionHistoryLimit字段不设置默认没有数量限制
+C. revisionHistoryLimit字段不设置默认没有数量限制 
 
 D. 更新了StatefulSet spec中字段，就会创建一个新的ControllerRevision单选 *2.创建StatefulSet spec中的template字段，用处不包括？*
 
@@ -301,9 +301,7 @@ D. validating webhook 依赖 mutating webhook 先执行
 
 正确答案： A C
 
-
-
-多选 *9.下列哪些设计是不可取的？*
+多选 *10.下列哪些设计是不可取的？*
 
 A. controller 主循环函数不幂等
 
@@ -314,3 +312,39 @@ C. 开发的多个 mutating webhook有顺序依赖
 D. validating webhook 依赖 mutating webhook 先执行
 
 正确答案： A C
+
+### 什莫是Operator
+
+> > 引用官网的话，“An Operator is a method of packaging, deploying and managing a Kubernetes application.” Operator是一种打包、部署、管理K8S应用的方式。
+> >
+> >  **Operator与K8S Controller的关系**
+> >
+> > 所有的Operator都是用了Controller模式，但并不是所有Controller都是Operator。只有当它满足: controller模式 + API扩展 + 专注于某个App/中间件时，才是一个Operator。
+> >
+> > Operator就是使用CRD实现的定制化的Controller.  它与内置K8S Controller遵循同样的运行模式(比如 watch, diff, action)
+> >
+> > Operator是特定领域的Controller实现 
+> >
+> > > 所以要了解Operator的工作原理，首先要先了解K8S controller的原理。
+> > >
+> > > ![controller](img/cloudnative/controller.png)
+> > >
+> > > Informer和workqueue是两个核心组件。Controller可以有一个或多个informer来跟踪某一个resource。Informter跟API server保持通讯获取资源的最新状态并更新到本地的cache中，一旦跟踪的资源有变化，informer就会调用callback。把关心的变更的Object放到workqueue里面。然后woker执行真正的业务逻辑，计算和比较workerqueue里items的当前状态和期望状态的差别，然后通过client-go向API server发送请求，直到驱动这个集群向用户要求的状态演化。
+
+
+
+
+
+### DeltaFIFO
+
+Delta其实就是kubernetes系统中对象的变化(增、删、改、同步)，FIFO是一个先入先出的队列，那么DeltaFIFO就是一个按序的(先入先出)kubernetes对象变化的队列。
+
+### Finalizers 
+
+Finalizers 是由字符串组成的列表，当 Finalizers 字段存在时，相关资源不允许被强制删除。存在 Finalizers 字段的的资源对象接收的第一个删除请求设置 `metadata.deletionTimestamp` 字段的值， 但不删除具体资源，在该字段设置后， `finalizer` 列表中的对象只能被删除，不能做其他操作。
+
+当 `metadata.deletionTimestamp` 字段非空时，controller watch 对象并执行对应 finalizers 的动作，当所有动作执行完后，需要清空 finalizers ，之后 k8s 会删除真正想要删除的资源。
+
+1. 如果资源对象未被删除且未设置 finalizers，则添加 finalizer并更新 k8s 资源对象；
+2. 如果正在删除资源对象并且 finalizers 仍然存在于 finalizers 列表中，则执行 pre-delete hook并删除 finalizers ，更新资源对象；
+3. 由于以上两点，需要确保 pre-delete hook是幂等的。
