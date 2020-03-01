@@ -20,11 +20,33 @@ win 10 系统 mysql 5.5   重装5.7
 
 4  打开 services.msc关闭服务 regedit  打开注册表 
 
+原本的 Mysql  已经禁用  但是还回报错  只能重新创建一个新的服务   mysq57
+
+![](../img/mysql/mysql-service.png)
 
 
-![mysql 注册表](../../img/mysql/mysql-service.png)
 
-![](../../img/mysql/mysql-rededit.png)
+该目录下删除mysql  整个文件夹    mysql 57 也是重新创建的 
 
-![](../../img/mysql/mysql-cmd.png)
+![](../img/mysql/mysql-regedit.png)
+
+
+
+
+
+
+
+当出现mysql>证明已经安装成功
+
+
+
+
+
+![](../img/mysql/mysql-cmd.png)
+
+
+
+
+
+select version();  显示mysql  版本 
 

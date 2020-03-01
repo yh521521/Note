@@ -1,5 +1,7 @@
 
 
+
+
 # spring Cloud
 
 ## 2020/2/23
@@ -617,3 +619,317 @@ Spring Cloud Gateway 不使用 Web 作为服务器，而是 **使用 WebFlux 作
 ### Apollo（阿波罗）
 
 Apollo（阿波罗）是携程框架部门研发的分布式配置中心，能够集中化管理应用不同环境、不同集群的配置，配置修改后能够实时推送到应用端，并且具备规范的权限、流程治理等特性，适用于微服务配置管理场景
+
+![](../../img/springcloud/apollo.png)
+
+#### 1）Config Service
+
+- 服务于 Client（项目中的 Apollo 客户端）对配置的操作，提供配置的查询接口。
+- 提供配置更新推送接口（基于 Http long polling）。
+
+#### 2）Admin Service
+
+服务于后台 Portal（Web 管理端），提供配置管理接口。
+
+#### 3）Meta Server
+
+- Meta Server 是对 Eureka 的一个封装，提供了 Http 接口获取 Admin Service 和 Config Service 的服务信息。
+- 部署时和 Config Service 是在一个 JVM 进程中的，所以 IP、端口和 Config Service 一致。
+
+#### 4）Eureka
+
+- 用于提供服务注册和发现。
+- Config Service 和 Admin Service 会向 Eureka 注册服务。
+- 为了简化部署流程，Eureka 在部署时和 Config Service 是在一个 JVM 进程中，也就是说 Config Service 同时包含了 Eureka 和 Meta Server。
+
+#### 5）Portal
+
+- 后台 Web 界面管理配置。
+- 通过 Meta Server 获取 Admin Service 服务列表（IP+Port）进行配置的管理，在客户端内做负载均衡。
+
+#### 6）Client
+
+- Apollo 提供的客户端，用于项目中对配置的获取、更新。
+- 通过 Meta Server 获取 Config Service 服务列表（IP+Port）进行配置的管理，在客户端内做负载均衡。
+
+其中，Apollo 架构设计流程可分为如下几类。
+
+#### 1）Portal 管理配置流程
+
+Portal 连接了 PortalDB，通过域名访问 Meta Server 获取 Admin Service 服务列表，直接对 Admin Service 发起接口调用，Admin Service 会对 ConfigDB 进行数据操作。
+
+#### 2）客户端获取配置流程
+
+Client 通过域名访问 Meta Server 获取 Config Service 服务列表，直接对 Config Service 发起接口调用，Config Service 会对 ConfigDB 进行数据操作。
+
+#### 3）Meta Server 获取服务列表流程
+
+Meta Server 会去 Eureka 中获取对应服务的实例信息，Eureka 中的实例信息是 Admin Service 和 Config Service 自动注册到 Eureka 中并保持心跳。
+
+#### JWT
+
+JWT（Json Web Token）是为了在网络应用环境间传递声明而执行的一种基于 Json 的开放标准。JWT 的声明一般被用来在身份提供者和服务提供者间传递被认证的用户身份信息，以便于从资源服务器获取资源。
+
+
+
+#### springboot -admin
+
+ 
+
+####  Your ApplicationContext is unlikely to start due to a @ComponentScan of the default package
+
+> > >   ApplicationContext 不能从一个组件的默认包启动
+> > >
+> > > 一般发出这个警告的原因是你把启动类直接放在的src目录下面。
+> > > 你需要在src目录下面再建一个包，比如controlcenter，然后把启动类放到controlcenter下面。
+> >
+> > 
+
+创建springboot项目  引入此依赖 端口9411
+
+<dependency>
+​    <groupId>de.codecentric</groupId>
+​    <artifactId>spring-boot-admin-starter-server</artifactId>
+</dependency>
+
+启动程序访问  9411
+
+![](../../img/springcloud/boot-admin.png)
+
+创建一个client
+
+​	<dependency>
+​    <groupId>de.codecentric</groupId>
+​    <artifactId>spring-boot-admin-starter-client</artifactId>
+</dependency>
+
+具体版本视情况而定 兼容就行 
+
+会看到 server  端变化 
+
+![](../../img/springcloud/boot-admin-server.png)
+
+
+
+点击details  没什莫反应  
+
+![](../../img/springcloud/boot-admin-instance.png)
+
+
+
+加上 actuator 依赖 会显示具体细节  配置文件 management.endpoints.web.exposure.include=*
+
+![](../../img/springcloud/admin-actuator.png)
+
+加上 logfile配置 logging.file=/Users/zhangsan/Downloads/spring-boot-admin-client.log
+
+![](../../img/springcloud/admin-logfile.png)
+
+加上 security  以来后 登陆会有验证 效果验证
+
+![](../../img/springcloud/admin-security.png)
+
+
+
+#### boot 整合swagger  
+
+
+
+
+
+pom.xml   遇到的难点主要是   swagger2  和swagger-ui  2.6.0 版本 和 2.0.6boot b版本 匹配   其它的版本不太匹配 
+
+```
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.0.6.RELEASE</version>
+        <relativePath/>
+    </parent>
+    <groupId>spring-swagger</groupId>
+    <artifactId>Swagger</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+
+    <dependencies>
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger2</artifactId>
+            <version>2.6.0</version>
+        </dependency>
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger-ui</artifactId>
+            <version>2.6.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
+```
+
+
+
+swagger配置类 
+
+```
+package controller;
+
+import io.swagger.annotations.ApiOperation;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import springfox.documentation.builders.ApiInfoBuilder;
+import springfox.documentation.builders.PathSelectors;
+import springfox.documentation.builders.RequestHandlerSelectors;
+import springfox.documentation.service.ApiInfo;
+import springfox.documentation.spi.DocumentationType;
+import springfox.documentation.spring.web.plugins.Docket;
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
+
+@Configuration
+@EnableSwagger2
+public class SwaggerConfig {
+   @Bean
+   public Docket productApi(){
+      return new Docket(DocumentationType.SWAGGER_2).
+            apiInfo(apiInfo()).
+            select().
+            apis(RequestHandlerSelectors.withMethodAnnotation(ApiOperation.class)).//添加ApiOpentaion注解的被扫描
+            paths(PathSelectors.any()).
+            build();
+   }
+   private ApiInfo apiInfo(){
+      return new ApiInfoBuilder().
+            title("swagger和springboot整合").
+            description("swagger的api文档").
+            version("1.0").build();
+   }
+}
+
+```
+
+```
+Test 实体类 
+
+package controller;
+
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
+@ApiModel(value = "testUser",description = "用户")
+public class TestUser {
+   @ApiModelProperty(value = "用户名字", name = "userName", dataType = "String")
+   private String userName;
+
+   private Integer age;
+
+   public Integer getAge() {
+      return age;
+   }
+
+   public void setAge(Integer age) {
+      this.age = age;
+   }
+
+   public String getUserName() {
+      return userName;
+   }
+
+   public void setUserName(String userName) {
+      this.userName = userName;
+   }
+}
+
+```
+
+test controller  
+
+```
+package controller;
+
+import io.swagger.annotations.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@Api(value = "测试TTestController",tags = {"测试访问接口"})
+@RequestMapping("test")
+public class TTestController {
+
+
+   @ApiOperation(value = "添加测试数据")
+   @PostMapping("/insertInfo")
+   @ApiResponses(value = {
+         @ApiResponse(code = 1000,message = "成功"),
+         @ApiResponse(code = 1001,message = "失败"),
+         @ApiResponse(code = 1002,message = "缺少参数",response = TestUser.class)
+   })
+   public String insertInfo(@ApiParam("用户名字") @RequestParam("userName") String userName,
+                      @ApiParam(value = "年龄") @RequestParam("age") Integer age){
+      String username = userName;
+      Integer Age = age;
+      return username+age.toString();
+   }
+}
+
+```
+
+访问   http://localhost:81/swagger-ui.htm  就可以得到如下页面 
+
+![](../../img/springcloud/swagger.png)
+
+填上 接口中传入的参数   username   和age   就行  try it out  得到返回码 200  测试成功
+
+
+
+高并发系统中有三把利器用来保护系统：**缓存、降级和限流**。限流的目的是为了保护系统不被大量请求冲垮，通过限制请求的速度来保护系统。在电商的秒杀活动中，限流是必不可少的一个环节。
+
+限流的方式也有多种，可以在 Nginx 层面限流，也可以在应用当中限流，比如在 API 网关中。
+
+## 限流算法
+
+令牌桶、漏桶。计数器
+
+#### 1）令牌桶
+
+令牌桶算法是一个存放固定容量令牌的桶，按照固定速率往桶里添加令牌。可以控制流量也可以控制并发量，假如我们想要控制 API 网关的并发量最高为 1000，可以创建一个令牌桶，以固定的速度往桶里添加令牌，超出了 1000 则不添加。
+
+当一个请求到达之后就从桶中获取一个令牌，如果能获取到令牌就可以继续往下请求，获取不到就说明令牌不够，并发量达到了最高，请求就被拦截。
+
+#### 2）漏桶
+
+漏桶是一个固定容量的桶，按照固定的速率流出，可以以任意的速率流入到漏桶中，超出了漏桶的容量就被丢弃，总容量是不变的。但是输出的速率是固定的，无论你上面的水流入的多快，下面的出口只有这么大，就像水坝开闸放水一样，如图 所示。
+
+![](../../img/springcloud/loutong.png)
+
+####  灰度发布
+
+灰度发布（又名金丝雀发布）是指在黑与白之间，能够平滑过渡的一种发布方式。在其上可以进行 A/B testing，即让一部分用户继续用产品特性 A，一部分用户开始用产品特性 B，如果用户对 B 没有什么反对意见，那么逐步扩大范围，把所有用户都迁移到 B 上面来。灰度发布可以保证整体系统的稳定，在初始灰度的时候就可以发现、调整问题，以保证其影响度。
+
+
+
+# 2020/03/01
+

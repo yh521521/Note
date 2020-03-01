@@ -1,0 +1,32 @@
+server:
+  port: 2001
+
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: path_route
+          uri: http://c.biancheng.net
+          predicates:
+            - Path=/spring_cloud
+        - id: host_route
+          uri: http://c.biancheng.net
+          predicates:
+            - Path=/blog/detail/{segment}
+        - id: query_route
+          uri: http://c.biancheng.net
+          predicates:
+            - Query=foo, ba.
+        - id: method_route
+          uri: http://baidu.com
+          predicates:
+            - Header=X-Request-Id, \d+
+
+        - id: customer_route
+          uri: http://c.biancheng.net
+          predicates:
+            - name: CheckAuth
+          args:
+              name: zhangsan
+
+
