@@ -692,3 +692,296 @@ set 将在属性分配操作调用,不返回任何内容
 delete 控值删除操作,不返回任何内容
 
 #### protocols  协议
+
+
+
+
+
+生成器  yield 
+
+
+
+a,b = b ,a+b  等价于 a= b  b = a+b
+
+
+
+Python中的真假测试对于整数而言，0为假，非0为真。
+
+对于 （ if not(i % 2) and (i % 3)）  
+
+not (i%2)为真的条件是：i%2为假，即i%2==0，即i能被2整除；i%3为真的条件是i%3!=0，即i不能被3整除。
+
+容器 --> 数据的分装
+
+函数 --> 语句的封装
+
+类 --> 方法和属性的封装
+
+模块-->模块就是程序
+
+>>> __name__  
+>>> '__main__' 显示的是主函数
+>>>
+>>> import 模块名字     as 别名  
+>>>
+>>> 别名.__name__ 就是他的 模块名字 
+>>
+>>搜索路径 init           
+
+python 自己带着电池 
+
+用一种方法 最好是只有一种方法来做一件事
+
+电池就是python 的标准库
+
+
+
+json 其实是一种轻量级的数据交换格式
+
+### 爬虫有道翻译
+
+# ####  url = 'http://fanyi.youdao.com/translate_o?smartresult=dict&smartresult=rule'  
+
+##### url= 'http://fanyi.youdao.com/translate?smartresult=dict&smartresult=rule'
+
+
+
+爬虫url 带o 的话会报错,去掉o 如上第二个就不会报错  不太理解
+
+import urllib.request
+import urllib.parse
+import json
+
+content = input('请输入需要翻译的内容:')
+url= 'http://fanyi.youdao.com/translate?smartresult=dict&smartresult=rule'
+
+data = {}
+
+data['i']=content
+data['type']=' AUTO'
+data['doctype']= 'json'
+data['version']= '2.1'
+data['keyfrom']= 'fanyi.web'
+data['smartresult']= 'dict'
+data['client']= 'fanyideskweb'
+data['salt']= '15843310877703'
+data['ts']= '1584331087770'
+data['action']= 'FY_BY_CLICKBUTTION'
+
+data=urllib.parse.urlencode(data).encode('utf-8')
+
+response = urllib.request.urlopen(url,data)
+html = response.read().decode('utf-8')
+target = json.loads(html)
+print("翻译结果: %s" %(target['translateResult'][0][0]['tgt']))
+
+![](../../img/python/translate-spider.png)
+
+代理
+
+import urllib.request
+
+url = 'https://www.kuaidaili.com'
+
+proxy_support = urllib.request.ProxyHandler({'http':'118.212.106.230:9999'})
+opener = urllib.request.build_opener(proxy_support)
+urllib.request.install_opener(opener)
+response = urllib.request.urlopen(url)
+html = response.read().decode('utf-8')
+print(html)
+
+会报错
+
+     Traceback (most recent call last):
+      File "G:/proxy.py", line 10, in <module>
+    return self.shell.write(s, self.tags) print(html)File "G:\MLAna\lib\idlelib\PyShell.py", line 1344, in write UnicodeEncodeError: 'UCS-2' codec can't encode characters in position 32908-32908: Non-BMP character not supported in Tk
+    
+    大致意思 就是 python 自带的idle 运行此程序报错 换个编辑器就行  在pycharm 运行没问题
+
+
+pass是一个在Python中不会被执行的语句。在复杂语句中，如果一个地方需要暂时被留白，它常常被用于占位符。
+
+def speak(self):     
+
+​	  pass
+
+正则匹配
+
+import re
+
+re.search(r'\d\d\d\.\d\d\d.\d\d\d\.\d\d\d','192.168.123.111')
+<_sre.SRE_Match object; span=(0, 15), match='192.168.123.111'>
+
+
+
+
+
+###  正则表达式 
+
+如果你需要重复地使用某个正则表达式,那么你可以先将该正则表达式编译成模式对象 我们使用re.compile()方法来编译  	
+
+>>> p =re.compile(r'[A-Z]')
+>>> type(p)
+>>> <class '_sre.SRE_Pattern'>
+
+
+
+####   爬虫 
+
+python 3.5  pip  install scrapy  就行     
+
+如何验证scrapy  安装成功
+
+import  scrapy 不报错 就行  
+
+或者 win +R  cmd   输入scrapy (这种我的有问题 ,具体也不太清楚)
+
+![](../../img/python/scrapy.png)
+
+crapy Engine(引擎): 负责Spider、ItemPipeline、Downloader、Scheduler中间的通讯，信号、数据传递等。
+
+Scheduler(调度器): 它负责接受引擎发送过来的Request请求，并按照一定的方式进行整理排列，入队，当引擎需要时，交还给引擎。
+
+Downloader（下载器）：负责下载Scrapy Engine(引擎)发送的所有Requests请求，并将其获取到的Responses交还给Scrapy Engine(引擎)，由引擎交给Spider来处理，
+
+Spider（爬虫）：它负责处理所有Responses,从中分析提取数据，获取Item字段需要的数据，并将需要跟进的URL提交给引擎，再次进入Scheduler(调度器)，
+
+Item Pipeline(管道)：它负责处理Spider中获取到的Item，并进行进行后期处理（详细分析、过滤、存储等）的地方.
+
+Downloader Middlewares（下载中间件）：你可以当作是一个可以自定义扩展下载功能的组件。
+
+Spider Middlewares（Spider中间件）：你可以理解为是一个可以自定扩展和操作引擎和Spider中间通信的功能组件（比如进入Spider的Responses;和从Spider出去的Requests）
+
+
+
+爬虫遇到的问题 页面是抓去了 但是没有内容  refer = none 
+
+
+
+#### python 3   tkinter 画布
+
+
+
+```
+from tkinter import *
+
+root=Tk()
+##Canvas  是一个画布  长宽为200   背景色  为 白色
+w = Canvas(
+		   root,
+		   width=200,
+		   height=200,
+		   background="white"
+		  )
+w.pack()
+			
+yellowLine = w.create_line(0,100,200,100,fill=‘yellow‘)  画线  黄色 坐标为 (0,100) , (200,100)
+
+redLine=w.create_line(100,0,100,200,fill=‘red‘,dash=(4,4)) 画线 红色 (100,0) ,(100,200) 分成四份
+dash=(4,4) 不写也没事 
+buleRect=w.create_rectangle(50,50,150,150,fill=‘blue‘)  换一个矩形  对角线坐标(50,50) (150,150)
+或者也可以这样理解  x = 50  y = 50  x= 150 y= 150 四条线  确定一个矩形  
+
+mainloop()
+```
+
+![](../../img/python/Canvas.png)
+
+
+
+
+
+五角星 
+
+
+
+
+    from tkinter import *
+
+    import math as m
+
+    root = Tk()
+    w = Canvas(root,width=200,height=100)
+    w.pack()
+    五角星的中心点
+    center_x = 100
+    center_y = 50
+    r = 50
+    
+    points=[
+    # 第一个点  左上点 A 
+    center_x - int(r*m.sin(2*m.pi /5)),
+    center_y - int(r*m.cos(2*m.pi /5)),
+    # 右上点 C  72
+    center_x + int(r*m.sin(2*m.pi/5)),
+    center_y - int(r*m.cos(2*m.pi/5)),
+    # 左下角点E  36
+    center_x -int(r*m.sin(m.pi /5)),
+    center_y +int(r*m.cos(m.pi/5)),
+    
+    #顶点 B
+    center_x ,
+    center_y -r,
+    
+    #右下角 的点 D 36
+    center_x + int(r*m.sin(m.pi /5)),
+    center_y + int(r*m.cos(m.pi/5))
+    ]
+    
+    w.create_polygon(points,outline="green",fill="")
+    
+    mainloop()
+
+
+
+
+
+
+
+
+
+
+
+![](../../img/python/five-pointed star.png)
+
+
+
+
+
+
+
+
+
+    from tkinter import *
+    
+    root = Tk()
+    
+    '''
+    
+    photo = PhotoImage(file = "g:/test.gif")
+    
+    Label(root,image=photo).pack()
+    
+    def callback():
+    
+    print("正中靶心")
+    0 最左边 1 最右边  0.5 中间
+    Button(root,text="点我",command =callback).place(relx = 0.5,rely = 0.5,anchor= CENTER)
+    
+    '''
+    
+    
+    ##  0.75  0.5 0.25 相当于 主框 的 3/4 1/2  1/4 
+    Label(root,bg= "red").place(relx=0.5,rely=0.5,relheight=0.75,relwidth=0.75,anchor = CENTER)
+    
+    Label(root,bg= "yellow").place(relx=0.5,rely=0.5,relheight=0.5,relwidth=0.5,anchor = CENTER)
+    
+    Label(root,bg= "green").place(relx=0.5,rely=0.5,relheight=0.25,relwidth=0.25,anchor = CENTER)
+    
+    
+    
+    mainloop()
+    
+
+​    ![](../../img/python/place.png)
+#   
