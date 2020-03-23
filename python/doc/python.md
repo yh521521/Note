@@ -953,35 +953,61 @@ mainloop()
 
 
     from tkinter import *
-    
+
     root = Tk()
-    
+
     '''
-    
+
     photo = PhotoImage(file = "g:/test.gif")
-    
+
     Label(root,image=photo).pack()
-    
+
     def callback():
-    
+
     print("正中靶心")
     0 最左边 1 最右边  0.5 中间
     Button(root,text="点我",command =callback).place(relx = 0.5,rely = 0.5,anchor= CENTER)
     
     '''
-    
-    
+
+
     ##  0.75  0.5 0.25 相当于 主框 的 3/4 1/2  1/4 
     Label(root,bg= "red").place(relx=0.5,rely=0.5,relheight=0.75,relwidth=0.75,anchor = CENTER)
     
     Label(root,bg= "yellow").place(relx=0.5,rely=0.5,relheight=0.5,relwidth=0.5,anchor = CENTER)
     
     Label(root,bg= "green").place(relx=0.5,rely=0.5,relheight=0.25,relwidth=0.25,anchor = CENTER)
-    
-    
-    
+
+
+​    
     mainloop()
-    
+​    
 
 ​    ![](../../img/python/place.png)
 #   
+
+1  什莫是surface 对象
+
+​           pygame 用来标比哦表示图像的对象
+
+2  将一个图像绘制到另一个图像是怎末一回事
+
+​		把图像放大 会看到马赛克  称之为像素   把像素覆盖过去
+
+3 移动图像是什莫呢 
+
+​	帧率 : 一秒钟可以切换图像的次数
+
+4 如何控值游戏的速度
+
+​	pygame.time.delay(10)  每个人的显卡不一样 导致游戏的速率不一样  所以  用clock 对象的tick 方法设置统一的速度
+
+
+
+
+
+####  今天知道了一个小的技巧  run 下面有一个 python  shell  可以重新打开idle 
+
+
+
+pygame 到处是surface对象 
