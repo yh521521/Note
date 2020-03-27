@@ -1011,3 +1011,30 @@ mainloop()
 
 
 pygame 到处是surface对象 
+
+
+
+#### 游戏开发 动画精灵
+
+pygame.sprite.Sprite.__init__()   Sprite  精灵 
+
+注意：music 模块虽然写了支持  .mp3  格式，但是它对 .mp3 格式的支持十分有限，经常你会在网上找到一段很好的 .mp3 的曲子，但是载入之后压根没有声音。你把它转为 .ogg 格式就可以很好的支持了。
+
+
+
+####   柳暗花明又一村 
+
+  #####    Python脚本报错AttributeError: ‘module’ object has no attribute’xxx’解决方法 
+
+跟 .pyc 文件有关   
+
+py脚本执行后 会生成一个__pycache__ 文件 目录下 有一个 .pyc 文件  
+
+pygame.sprite.spritecollide()  方法 :  碰撞检测 默认情况下 以图片的矩形区域作为检测范围
+
+  代替 spritecollide 碰撞检测   检测非透明部分
+
+        self.mask = pygame.mask.from_surface(self.image)
+        pygame.sprite.collide_mask
+
+pygame  默认情况下只有8条音效的通道
