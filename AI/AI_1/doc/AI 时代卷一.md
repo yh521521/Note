@@ -82,7 +82,7 @@ AI 用的较多的是python 语言
 
 scikit -learn 简单有效的预测数据分析工具每个人都可以访问，并且可以在各种上下文中重用基于NumPy、SciPy和matplotlib构建开源，商用-BSD许可证
 
-scijit-learn  单机版 数据量不打的可以选择  海量数据的话可以选择 spark 的 mLlib  或者深度学习的tensflow   
+scijit-learn  单机版 数据量不大的可以选择  海量数据的话可以选择 spark 的 mLlib  或者深度学习的tensflow   
 
 > > > scikit-learn 分为以下模块 :
 > > >
@@ -174,7 +174,7 @@ keras 开源出来的深度学习的框架
 
 #### 线性回归 
 
-线性 y  =  a*下+b 一次方的变化 
+线性 y  =  a*x+b 一次方的变化 
 
 回归 : 回归到平均值 
 
