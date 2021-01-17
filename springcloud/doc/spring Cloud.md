@@ -70,7 +70,7 @@ Spring Cloud 是一系列框架的有序集合。它利用 Spring Boot 的开发
 
 - Eureka：服务注册中心，用于服务管理。
 
-- Ribbon：基于客户端的负载均衡组件。
+- Ribbon：基于客户端的负载均衡组件。                 
 
 - Hystrix：容错框架，能够防止服务的雪崩效应。
 
@@ -680,8 +680,8 @@ JWT（Json Web Token）是为了在网络应用环境间传递声明而执行的
 
 > > >   ApplicationContext 不能从一个组件的默认包启动
 > > >
-> > > 一般发出这个警告的原因是你把启动类直接放在的src目录下面。
-> > > 你需要在src目录下面再建一个包，比如controlcenter，然后把启动类放到controlcenter下面。
+> > >   一般发出这个警告的原因是你把启动类直接放在的src目录下面。
+> > >   你需要在src目录下面再建一个包，比如controlcenter，然后把启动类放到controlcenter下面。
 > >
 > > 
 
