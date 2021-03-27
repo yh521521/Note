@@ -1134,6 +1134,8 @@ writeAndFlush
 
 异线程回收对象
 
+linux  中 ulimit  -n  1024  (一个进程 能打开的最大文件数)
+
 
 
 linux  中 ulimit  -n  1024  (一个进程 能打开的最大文件数)
