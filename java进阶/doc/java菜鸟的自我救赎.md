@@ -18,7 +18,7 @@ package com.test;
 public class A {
 	
 	public String tel;
-	public int age;
+	public int age;b
 	
 	public A(String tel, int age) {
 		this.tel = tel;
@@ -893,6 +893,47 @@ netty会重新向服务端注册一个opSelector事件
 
 4 doBind
 
+#### 神魔是Executor
+
+我们可以这么理解：Executor就是一个**线程池框架**，在开发中如果需要创建线程可优先考虑使用Executor，无论你需要多线程还是单线程，Executor为你提供了很多其他功能，包括线程状态，生命周期的管理。
+Executor 位于java.util.concurrent.Executors ，提供了用于创建工作线程的线程池的工厂方法。它包含一组用于有效管理工作线程的组件。Executor API 通过 Executors 将任务的执行与要执行的实际任务解耦。 这是 **生产者-消费者** 模式的一种实现。
+
+是一个静态工厂类  
+
+浮现于脑海中的一个基本的问题是，当我们创建 java.lang.Thread 对象或调用实现了 Runnable/Callable 接口来实现多线程时，**为什么需要线程池？**
+如果我们不采用线程池，为每一个请求都创建一个线程的话：
+1 管理线程的生命周期开销非常高。管理这些线程的生命周期会明显增加 CPU 的执行时间，会消耗大量计算资源。
+2 线程间上下文切换造成大量资源浪费。
+3 程序稳定性会受到影响。我们知道，创建线程的数量存在一个限制，这个限制将随着平台的不同而不同，并且受多个因素制约，包括jvm的启动参数、Thread构造函数中请求的栈大小，以及底层操作的限制等。如果超过了这个限制，那么很可能抛出OutOfMemoryError异常，这对于运行中的应用来说是非常危险的。
+
+所有的这些因素都会导致系统吞吐量下降。线程池通过保持一些存活线程并重用这些线程来克服这个问题。当提交到线程池中的任务多于线程池最大任务数时，那些多余的任务将被放到一个队列中。 一旦正在执行的线程有空闲了，它们会从队列中取下一个任务来执行。JDK 中的 Executors中， 此任务队列是没有长度限制的。
+
+
+
+![](../../img/java/executor.png)
+
+**Executor：**执行者，java线程池框架的最上层父接口，地位类似于spring的BeanFactry、集合框架的Collection接口，在Executor这个接口中只有一个execute方法，该方法的作用是向线程池提交任务并执行。
+
+**ExecutorService：**该接口继承自Executor接口，添加了shutdown、shutdownAll、submit、invokeAll等一系列对线程的操作方法，该接口比较重要，在使用线程池框架的时候，经常用到该接口。
+
+**AbstractExecutorService:**这是一个抽象类，实现ExecuotrService接口，
+
+**ThreadPoolExecutor：**这是Java线程池最核心的一个类，该类继承自AbstractExecutorService，主要功能是创建线程池，给任务分配线程资源，执行任务。
+
+**ScheduledExecutorSerivce 和 ScheduledThreadPoolExecutor 提供了另一种线程池**：延迟执行和周期性执行的线程池。
+
+#### NioEventLoopGroup 
+
+ 如何理解NioEventloopGroup   可以理解为一个线程池 内部维护了一组线程,每个线程负责处理多个channel (管道)上的事件 ,一个channel 只对应一个线程 (避免多线程下 数据同步问题)
+
+
+
+#### NioEventloopGroup   和Executor 的关系
+
+
+
+#### ![](../../img/java/Netty_executor.png) 
+
 
 
 #### NioEventLoop  
@@ -1099,6 +1140,9 @@ linux  中 ulimit  -n  1024  (一个进程 能打开的最大文件数)
 
 
 
+### netty 中 tcp 参数  
+
+![](../../img/java/tcp_parame.png)
 
 
 
@@ -1110,6 +1154,76 @@ linux  中 ulimit  -n  1024  (一个进程 能打开的最大文件数)
 
 
 
+zookeeper   
+
+
+
+zookeeer 客户端创建节点  会有序列号  ,用curator框架  创建的 节点  没有序列号 
+
+
+
+神魔是字节  字  KB MB 
+
+位(bit) 是电子计算机中最小的数据单位 每一位状态 只能是 0 或1 
+
+　字节：8个二进制位构成1个"字节(Byte)"，它是存储空间的基本计量单位。1个字节可以储存1个英文字母或者半个汉字，换句话说，1个汉字占据2个字节的存储空间。
+
+字："字"由若干个字节构成，字的位数叫做字长，不同档次的机器有不同的字长。例如一台8位机，它的1个字就等于1个字节，字长为8位。如果是一台16位机，那么，它的1个字就由2个字节构成，字长为16位。字是计算机进行数据处理和运算的单位。 
+
+
+
+1KB表示1K个Byte，也就是1024个字节。
+
+buffer 
+
+| 索引        | 说明                                  |
+| --------- | ----------------------------------- |
+| capacity  | 缓冲区数组的总长度                           |
+| position  | 下一个要操作的数据元素的位置                      |
+| **limit** | 缓冲区数组中不可操作的下一个元素的位置：limit<=capacity |
+| mark      | 用于记录当前position的前一个位置或者默认是-1         |
+
+flip方法    将 pos 赋值给  limit pos 为 0 
+
+
+
+三次握手 四次放手 
+
+![](../../img/java/three_hand.png)
+
+
+
+服务器断端口启动  ip  port
+
+
+
+第一次握手 客户端发送请求 
+
+第二次握手 服务器端 收到信息 确认 
+
+第三次握手 客户端收到服务器端的确认信息  ,此时双方 建立连接  可以开始传输数据 
+
+
+
+
+
+接下来开始传输数据    客户端 发 往服务器    或者 服务器发往 客户端   都称之为传输数据
+
+
+
+传输玩数据之后 就关闭连接 
+
+
+
+此时 四次放手  
+
+1 客户端请求关闭连接 
+
+2 服务器端 确认可以关闭  
+
+3服务器端 关闭 
+
+4 客户端 收到服务器端的ack 之后开始关闭客户端
 
 
 
@@ -1117,11 +1231,5 @@ linux  中 ulimit  -n  1024  (一个进程 能打开的最大文件数)
 
 
 
-
-
-
-
-
-
-
+  
 
